@@ -1,3 +1,5 @@
+$title_nginx = hiera('title_nginx')
+
 Service {
   provider => dummy
 }
@@ -8,9 +10,14 @@ nginx::resource::vhost { 'default':
   www_root => '/var/www/html',
 }
 
+file { [ '/var/www',
+         '/var/www/html', ]:
+       ensure  => directory,
+}
+
 file { '/var/www/html/index.html':
   ensure  => present,
-  content => 'Hello Puppet and Docker',
+  content => hiera('title_nginx'),
 }
 
 exec { 'Disable Nginx daemon mode':
